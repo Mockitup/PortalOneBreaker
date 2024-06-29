@@ -3,6 +3,9 @@
 
 #include "Game/BreakerBrickSpawner.h"
 
+#include "Game/BreakerGameGameModeBase.h"
+#include "Kismet/GameplayStatics.h"
+
 
 UBreakerBrickSpawner::UBreakerBrickSpawner()
 {
@@ -28,6 +31,7 @@ void UBreakerBrickSpawner::GenerateBricks()
 			ABreakerBrickBase* SpawnedBrick = GetWorld()->SpawnActor<ABreakerBrickBase>(BrickClass, SpawnLocation, SpawnRotation, SpawnParameters);
 			if(SpawnedBrick)
 			{
+				SpawnedBrick->OnBrickDeath.AddDynamic(this, &ThisClass::HandleBrickDeath);
 				SpawnedBricks.Add(SpawnedBrick);
 			}
 		}
@@ -46,4 +50,18 @@ void UBreakerBrickSpawner::CleanUpBricks()
 	}
 	SpawnedBricks.Empty();
 }
+
+void UBreakerBrickSpawner::HandleBrickDeath(ABreakerBrickBase* Caller)
+{
+	SpawnedBricks.Remove(Caller);
+	if(SpawnedBricks.Num() <= 0)
+	{
+		ABreakerGameGameModeBase* GameMode = Cast<ABreakerGameGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+		if(GameMode)
+		{
+			GameMode->EndGame();
+		}
+	}
+}
+
 

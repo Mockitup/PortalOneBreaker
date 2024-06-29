@@ -47,4 +47,7 @@ public:
 
 	UFUNCTION()
 	void CleanUpBricks();
+
+	UFUNCTION()
+	void HandleBrickDeath(ABreakerBrickBase* Caller);
 };

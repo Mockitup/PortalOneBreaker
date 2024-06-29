@@ -43,7 +43,8 @@ void ABreakerBrickBase::HandleInteraction()
 	{
 		GameMode->AddToPlayerScore(ScoreReward);
 	}
-
+	// Call delegate
+	OnBrickDeath.Broadcast(this);
 	// Destroy object
 	this->Destroy();
 }

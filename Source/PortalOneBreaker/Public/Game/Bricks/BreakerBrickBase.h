@@ -9,6 +9,10 @@
 #include "Utilities/BreakerInteractable.h"
 #include "BreakerBrickBase.generated.h"
 
+
+// Used to handle Brick deaths
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBrickDeath, ABreakerBrickBase*, Caller);
+
 /**
  * 
  */
@@ -34,6 +38,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Breaker Brick")
 	UStaticMeshComponent* BrickMesh;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnBrickDeath OnBrickDeath;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Breaker Brick")
 	int32 ScoreReward = 1;
 	

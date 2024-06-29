@@ -12,8 +12,5 @@ class PORTALONEBREAKER_API ABreakerBrickExtraBall : public ABreakerBrickBase
 	GENERATED_BODY()
 
 public:
-	
-	int32 ScoreReward = 10;
-	
 	virtual void HandleInteraction() override;
 };
