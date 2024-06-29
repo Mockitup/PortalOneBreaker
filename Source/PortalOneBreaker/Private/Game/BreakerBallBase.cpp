@@ -21,7 +21,7 @@ ABreakerBallBase::ABreakerBallBase()
 	BallMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	// Set Initial Direction, which is always up with a slight variation
-	Direction = FVector(0.f, FMath::RandRange(-0.25f, 0.25f), 1.f);
+	Direction = FVector(0.f, FMath::RandRange(-0.5f, 0.5f), 1.f);
 	Direction.Normalize();
 }
 
@@ -42,8 +42,14 @@ void ABreakerBallBase::Tick(float DeltaTime)
 	// Only move the ball if the game has actually started
 	if(bIsActive)
 	{
+		bHasInteractedThisFrame = false;
+		
 		const FVector Offset = Direction * Speed * DeltaTime;
 		AddActorWorldOffset(Offset, true);
+		if(GetActorLocation().Z <= ZKillLocation)
+		{
+			DestroyBall();
+		}
 	}
 
 }
@@ -51,8 +57,12 @@ void ABreakerBallBase::Tick(float DeltaTime)
 void ABreakerBallBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *OtherActor->GetName());
-
+	// Check if this frame already handled collisions
+	if(bHasInteractedThisFrame)
+	{
+		return;
+	}
+	
 	// Calculate new direction
 	if(bFromSweep)
 	{
@@ -64,11 +74,19 @@ void ABreakerBallBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 		// Cast OnInteracted to other actor.
 		Cast<IBreakerInteractable>(OtherActor)->OnInteraction(this);
 	}
+
+	bHasInteractedThisFrame = true;
 }
 
 void ABreakerBallBase::CalculateNewDirection(const FHitResult& HitResult)
 {
 	// Calculate reflection vector from HitResult
 	Direction = FMath::GetReflectionVector(Direction, HitResult.ImpactNormal);
+}
+
+void ABreakerBallBase::DestroyBall()
+{
+	OnBallDeath.Broadcast(this);
+	this->Destroy();
 }
 

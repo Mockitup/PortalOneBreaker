@@ -3,11 +3,14 @@
 
 #include "Game/Bricks/BreakerBrickBase.h"
 
+#include "Game/BreakerGameGameModeBase.h"
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values
 ABreakerBrickBase::ABreakerBrickBase()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	// Spawn standard components
 	BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Brick Collider"));
@@ -27,9 +30,20 @@ void ABreakerBrickBase::BeginPlay()
 	
 }
 
-// Called every frame
-void ABreakerBrickBase::Tick(float DeltaTime)
+void ABreakerBrickBase::OnInteraction(const AActor* CallingActor)
 {
-	Super::Tick(DeltaTime);
+	Super::OnInteraction(CallingActor);
+	HandleInteraction();
+}
 
+void ABreakerBrickBase::HandleInteraction()
+{
+	ABreakerGameGameModeBase* GameMode = Cast<ABreakerGameGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	if(GameMode)
+	{
+		GameMode->AddToPlayerScore(ScoreReward);
+	}
+
+	// Destroy object
+	this->Destroy();
 }

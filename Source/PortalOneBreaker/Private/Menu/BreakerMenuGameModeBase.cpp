@@ -29,5 +29,6 @@ void ABreakerMenuGameModeBase::InitializeWidgets() const
 
 void ABreakerMenuGameModeBase::LoadGameMap()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Load level"));
+	UWorld* World = GetWorld();
+	UGameplayStatics::OpenLevel(GetWorld(), GameMapName , true);
 }

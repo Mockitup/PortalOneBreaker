@@ -33,10 +33,15 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Breaker Brick")
 	UStaticMeshComponent* BrickMesh;
-	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Breaker Brick")
+	int32 ScoreReward = 1;
+	
+	// From Interaction Interface
+	virtual void OnInteraction(const AActor* CallingActor) override;
+
+	// Handles reward and deletion, and evnetual effects.
+	UFUNCTION()
+	virtual void HandleInteraction();
+	
 };

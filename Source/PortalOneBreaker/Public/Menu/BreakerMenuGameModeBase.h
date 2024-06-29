@@ -25,7 +25,7 @@ public:
 	TSubclassOf<class UUserWidget> MenuWidgetClass;
 
 	UPROPERTY(EditAnywhere, Category = "Settings")
-	FString GameMapName;
+	FName GameMapName;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Utilities")
 	UCatFacts* CatFactsComponent;
@@ -34,5 +34,5 @@ public:
 	void InitializeWidgets() const;
 
 	UFUNCTION(BlueprintCallable)
-	static void LoadGameMap();
+	void LoadGameMap();
 };

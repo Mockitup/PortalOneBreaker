@@ -7,8 +7,8 @@
 // Sets default values
 ABreakerGameInteractableActorBase::ABreakerGameInteractableActorBase()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	// We dont need tick on this actor.
+	PrimaryActorTick.bCanEverTick = false;
 }
 
 // Called when the game starts or when spawned
@@ -17,13 +17,6 @@ void ABreakerGameInteractableActorBase::BeginPlay()
 	Super::BeginPlay();
 	
 }
-
-// Called every frame
-void ABreakerGameInteractableActorBase::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
 void ABreakerGameInteractableActorBase::OnInteraction(const AActor* CallingActor)
 {
 	IBreakerInteractable::OnInteraction(CallingActor);

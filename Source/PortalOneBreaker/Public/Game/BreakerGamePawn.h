@@ -3,7 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputActionValue.h"
+#include "Camera/CameraComponent.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/Pawn.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "BreakerGamePawn.generated.h"
 
 UCLASS()
@@ -20,9 +24,44 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	// Components
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Breaker Pawn")
+	USceneComponent* Root;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Breaker Pawn")
+	USpringArmComponent* CameraSpring;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Breaker Pawn")
+	UCameraComponent* PlayerCamera;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Breaker Pawn")
+	USceneComponent* PaddleRoot;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Breaker Pawn")
+	UBoxComponent* PaddleCollision;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Breaker Pawn")
+	UStaticMeshComponent* PaddleMesh;
+
+	// Gameplay variables
+	UPROPERTY(EditAnywhere, Category = "Breaker Pawn")
+	float PaddleSpeed;
+
+	UPROPERTY(EditAnywhere, Category = "Breaker Pawn")
+	float PaddleMaxBounds = 500.f;
+
+	UPROPERTY(EditAnywhere, Category = "Breaker Pawn")
+	float PaddleBoundsTolerance = 0.25f;
+	
+	// Input mappings for bindings
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Breaker Pawn")
+	class UInputMappingContext* InputMappingContext;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Breaker Pawn")
+	class UInputAction* InputStrafe;
+
+	// Setup for Input
+	void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent);
+
+	void AddStrafeInput(const FInputActionValue& Value);
 };

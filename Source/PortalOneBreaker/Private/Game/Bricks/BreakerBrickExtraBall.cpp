@@ -3,24 +3,16 @@
 
 #include "Game/Bricks/BreakerBrickExtraBall.h"
 
+#include "Game/BreakerGameGameModeBase.h"
+#include "Kismet/GameplayStatics.h"
 
-// Sets default values
-ABreakerBrickExtraBall::ABreakerBrickExtraBall()
+
+void ABreakerBrickExtraBall::HandleInteraction()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	Super::HandleInteraction();
+	ABreakerGameGameModeBase* GameMode = Cast<ABreakerGameGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	if(GameMode)
+	{
+		GameMode->SpawnNewBall();
+	}
 }
-
-// Called when the game starts or when spawned
-void ABreakerBrickExtraBall::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void ABreakerBrickExtraBall::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
