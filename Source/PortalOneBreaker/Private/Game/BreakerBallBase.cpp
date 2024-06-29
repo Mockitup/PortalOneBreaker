@@ -3,6 +3,8 @@
 
 #include "Game/BreakerBallBase.h"
 
+#include "Game/BreakerGamePawn.h"
+
 
 // Sets default values
 ABreakerBallBase::ABreakerBallBase()
@@ -81,6 +83,23 @@ void ABreakerBallBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 void ABreakerBallBase::CalculateNewDirection(const FHitResult& HitResult)
 {
 	// Calculate reflection vector from HitResult
+	// If we hit the pawn, we try to allow the player more control based on distance from the root.
+	if(HitResult.GetActor()->GetClass()->IsChildOf(APawn::StaticClass()))
+	{
+		ABreakerGamePawn* GamePawn = Cast<ABreakerGamePawn>(HitResult.GetActor());
+		if(GamePawn)
+		{
+			FVector PaddleLocation = GamePawn->PaddleRoot->GetComponentLocation();
+			float DistanceToPaddleCenter = (GetActorLocation()-PaddleLocation).Length();
+			float DistanceMultiplier = FMath::GetMappedRangeValueClamped(FVector2D(0.f, 50.f), FVector2D(1.0f, 0.5f), DistanceToPaddleCenter);
+			
+			FVector ModifiedDirection = Direction * FVector(1.f,1.f+(1-DistanceMultiplier),DistanceMultiplier);
+			ModifiedDirection.Normalize();
+			Direction = FMath::GetReflectionVector(ModifiedDirection, HitResult.ImpactNormal);
+			return;
+		}
+	}
+	// If not a pawn, just do simple reflection math
 	Direction = FMath::GetReflectionVector(Direction, HitResult.ImpactNormal);
 }
 
